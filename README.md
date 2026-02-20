@@ -8,3 +8,6 @@
 
 - **Nicole Caroline Santos**  
   🔗 GitHub: https://github.com/santos-nicole
+
+- **Poliana Aparecida do Carmo Faria**
+  🔗 GitHub: 
