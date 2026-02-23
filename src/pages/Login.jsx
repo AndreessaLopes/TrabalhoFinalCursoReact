@@ -1,11 +1,13 @@
-
-
+import Sidebar from "../components/Sidebar";
 
 const Login = () => {
   return (
-    <div className="flex items-center justify-center h-screen text-black">
-        <h1>Login</h1>
+    <div className="flex">
+      <Sidebar />
+      <div className="flex-1 md:ml-64 ml-0">
+        {/* Conteúdo */}
+      </div>
     </div>
-    )   
-}
-export default Login
+  );
+};
+export default Login;
