@@ -6,4 +6,8 @@ export const routes = createBrowserRouter([
     path: "/",
     element: <Login />,
   },
+  {
+    path: "/presentes",
+    element: <h1>Presentes</h1>,
+  }
 ]);

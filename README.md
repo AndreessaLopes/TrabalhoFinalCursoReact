@@ -1,3 +1,5 @@
+### Etapa 1 - Criação do repositório no github e criar um readme.md com nome dos integrantes
+
 ## 👥 Integrantes
 
 - **Andressa Caroline Lopes de Assis**  
