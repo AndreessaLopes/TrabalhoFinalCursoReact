@@ -5,7 +5,7 @@ import {
   Gift,
   Settings,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect } from "react";
 import { MdMenuOpen } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import logo from "../assets/logo.png";
@@ -18,20 +18,20 @@ const menuItems = [
   { name: "Configurações", icon: Settings },
 ];
 
-const Sidebar = () => {
-  const [open, setOpen] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
+const Sidebar = ({ open, mobileOpen, setMobileOpen }) => {
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setMobileOpen]);
 
   return (
     <>
-      {/* BOTÃO MOBILE */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-50 bg-gray-900 text-white p-2 rounded-lg shadow-lg"
-      >
-        <MdMenuOpen size={22} />
-      </button>
-
       {/* OVERLAY MOBILE */}
       {mobileOpen && (
         <div
@@ -40,30 +40,29 @@ const Sidebar = () => {
         />
       )}
 
-      <nav
+      <aside
         className={`
-          fixed md:relative
-          z-50
-          h-screen
+          fixed inset-y-0 left-0
           bg-gray-900 text-white
           shadow-xl
           flex flex-col
-          transition-all duration-300
-          ${open ? "w-64" : "w-20"}
+          z-50
+
+          w-64
+          transform transition-transform duration-300 ease-in-out
+
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
+          ${open ? "md:w-64" : "md:w-20"}
         `}
       >
         {/* HEADER */}
         <div className="flex items-center justify-between px-4 h-20 border-b border-gray-800">
-          <div className="flex items-center gap-3">
-            <img
-              src={logo}
-              alt="logo"
-              className="w-10 rounded-md"
-            />
+          <div className="flex items-center gap-3 overflow-hidden">
+            <img src={logo} alt="logo" className="w-10 shrink-0 rounded-md" />
+
             {open && (
-              <h1 className="text-xl font-bold">
+              <h1 className="text-xl font-bold whitespace-nowrap">
                 Event<span className="text-green-400">Manager</span>
               </h1>
             )}
@@ -71,15 +70,15 @@ const Sidebar = () => {
 
           {/* Toggle Desktop */}
           <button
-            onClick={() => setOpen(!open)}
-            className="hidden md:block"
+            onClick={() => setMobileOpen((prev) => !prev)}
+            className="md:hidden bg-gray-900 text-white p-2 rounded-lg shadow"
           >
-            <MdMenuOpen size={26} />
+            <MdMenuOpen size={22} />
           </button>
         </div>
 
         {/* MENU */}
-        <ul className="flex-1 px-3 py-4 space-y-2">
+        <ul className="flex-1 px-3 py-6 space-y-2">
           {menuItems.map((item, index) => {
             const Icon = item.icon;
 
@@ -96,7 +95,7 @@ const Sidebar = () => {
                   ${!open && "justify-center"}
                 `}
               >
-                <Icon size={20} />
+                <Icon size={20} className="shrink-0" />
                 {open && <span>{item.name}</span>}
               </li>
             );
@@ -116,13 +115,11 @@ const Sidebar = () => {
           {open && (
             <div className="leading-4">
               <p className="text-sm font-medium">Usuário</p>
-              <span className="text-xs text-gray-400">
-                email@email.com
-              </span>
+              <span className="text-xs text-gray-400">email@email.com</span>
             </div>
           )}
         </div>
-      </nav>
+      </aside>
     </>
   );
 };
