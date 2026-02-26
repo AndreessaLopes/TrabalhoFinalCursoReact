@@ -1,3 +1,4 @@
+import {redirect, useNavigate} from "react-router-dom"
 import {
   LayoutDashboard,
   Calendar,
@@ -11,9 +12,9 @@ import { FaUserCircle } from "react-icons/fa";
 import logo from "../assets/logo.png";
 
 const menuItems = [
-  { name: "Dashboard", icon: LayoutDashboard },
+  { name: "Dashboard", icon: LayoutDashboard, redirect: '/dashboard' },
   { name: "Eventos", icon: Calendar },
-  { name: "Fotos", icon: ImagePlus },
+  { name: "Fotos", icon: ImagePlus, redirect: '/dashboard/fotos' },
   { name: "Lista de Presentes", icon: Gift },
   { name: "Configurações", icon: Settings },
 ];
@@ -81,10 +82,12 @@ const Sidebar = ({ open, mobileOpen, setMobileOpen }) => {
         <ul className="flex-1 px-3 py-6 space-y-2">
           {menuItems.map((item, index) => {
             const Icon = item.icon;
+            const navigate = useNavigate();
 
             return (
               <li
                 key={index}
+                onClick={() => item.redirect && navigate(item.redirect)}
                 className={`
                   flex items-center gap-3
                   px-3 py-3
