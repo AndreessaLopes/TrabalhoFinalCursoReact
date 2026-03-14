@@ -13,17 +13,11 @@ const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 export default function Login() {
-  const {
-    email, setEmail,
-    password, setPassword,
-    showPassword, toggleShowPassword,
-    isLoading, error,
-    handleSubmit,
-  } = useLoginForm();
+  const { register, handleSubmit, errors, showPassword, isLoading, error } =
+    useLoginForm();
 
   return (
     <div className="login-page">
-
       {/* Blobs decorativos */}
       <div className="login-blob login-blob--gold" aria-hidden="true" />
       <div className="login-blob login-blob--rose" aria-hidden="true" />
@@ -50,11 +44,12 @@ export default function Login() {
 
       {/* Card principal */}
       <main className="login-card">
-
         {/* Logo */}
         <div className="login-logo">
           <div className="login-logo__wrapper">
-            <span className="login-logo__icon" aria-hidden="true">🎉</span>
+            <span className="login-logo__icon" aria-hidden="true">
+              🎉
+            </span>
             <h1 className="login-logo__name">festeja</h1>
           </div>
           <p className="login-logo__tagline">seu evento, sua memória</p>
@@ -63,49 +58,64 @@ export default function Login() {
         {/* Título */}
         <div className="login-title">
           <h2 className="login-title__heading">Bem-vindo de volta!</h2>
-          <p className="login-title__sub">Entre na sua conta para acessar seu evento.</p>
+          <p className="login-title__sub">
+            Entre na sua conta para acessar seu evento.
+          </p>
         </div>
 
         {/* Formulário */}
         <form className="login-form" onSubmit={handleSubmit} noValidate>
-
           {/* E-mail */}
           <div className="login-field">
-            <label className="login-field__label" htmlFor="email">E-mail</label>
+            <label className="login-field__label" htmlFor="email">
+              E-mail
+            </label>
             <input
               id="email"
               type="email"
               className="login-field__input"
               placeholder="seuemail@exemplo.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
-              required
+              {...register("email", {
+                required: "E-mail obrigatório",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "E-mail inválido",
+                },
+              })}
             />
+            {errors.email && (
+              <p className="login-error" role="alert">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           {/* Senha */}
           <div className="login-field login-field--password">
-            <label className="login-field__label" htmlFor="password">Senha</label>
+            <label className="login-field__label" htmlFor="password">
+              Senha
+            </label>
             <div className="login-field__input-wrapper">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 className="login-field__input login-field__input--password"
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
-                required
+                {...register("password", {
+                  required: "Senha obrigatória",
+                  minLength: {
+                    value: 6,
+                    message: "Mínimo 6 caracteres",
+                  },
+                })}
               />
-              <button
-                type="button"
-                className="login-field__toggle-btn"
-                onClick={toggleShowPassword}
-                aria-label={showPassword ? "Esconder senha" : "Mostrar senha"}
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </button>
+              {errors.password && (
+                <p className="login-error" role="alert">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -117,14 +127,18 @@ export default function Login() {
           </div>
 
           {/* Erro */}
-          {error && <p className="login-error" role="alert">{error}</p>}
+          {error && (
+            <p className="login-error" role="alert">
+              {error}
+            </p>
+          )}
 
           {/* Submit */}
           <div className="login-submit">
             <button
               type="submit"
-              className="login-submit__btn"
               disabled={isLoading}
+              className={`login-submit__btn ${isLoading ? "login-submit__btn--loading" : ""}`}
             >
               {isLoading ? "Entrando..." : "Entrar no Festeja"}
             </button>
@@ -148,10 +162,11 @@ export default function Login() {
         {/* Pills de funcionalidades */}
         <div className="login-features" aria-label="Funcionalidades do Festeja">
           {["🎁 Presentes", "📸 Fotos", "💰 Gastos"].map((tag) => (
-            <span key={tag} className="login-features__pill">{tag}</span>
+            <span key={tag} className="login-features__pill">
+              {tag}
+            </span>
           ))}
         </div>
-
       </main>
     </div>
   );

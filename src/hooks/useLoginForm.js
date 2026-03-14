@@ -1,60 +1,53 @@
+import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export function useLoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [signIn] = useState(() => async (email, password) => {
-        // Simulação de autenticação
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        if (email === "admin@festeja.com" && password === "admin123") {
-            return { success: true };
-        }
-        throw new Error("Credenciais inválidas");
-    });
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    const toggleShowPassword = () => setShowPassword((prev) => !prev);
+  // ← react-hook-form entra aqui
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
+  const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
-        if (!email || !password) {
-            setError("Preencha todos os campos.");
-            return;
-        }
+  const signIn = async (email, password) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (email === "admin@festeja.com" && password === "admin123") {
+      return { success: true };
+    }
+    throw new Error("Credenciais inválidas");
+  };
 
-        try {
-            setIsLoading(true);
-            const result = await signIn(email, password);
-            localStorage.setItem("user", JSON.stringify({ email }));
-            if (result.success) {
-                console.log("Login realizado com sucesso:", { email });
-                navigate("/dashboard");
-            } else {
-                setError("E-mail ou senha inválidos.");
-            }
-        } catch (err) {
-            setError("E-mail ou senha inválidos.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const onSubmit = async (data) => {
+    setError("");
+    try {
+      setIsLoading(true);
+      await signIn(data.email, data.password);
+      login(data.email);
+      navigate("/dashboard");
+    } catch {
+      setError("E-mail ou senha inválidos.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-
-    return {
-        email,
-        setEmail,
-        password,
-        setPassword,
-        showPassword,
-        toggleShowPassword,
-        isLoading,
-        error,
-        handleSubmit,
-    };
+  return {
+    register,                            // ← novo
+    handleSubmit: handleSubmit(onSubmit), // ← novo
+    errors,                              // ← novo
+    showPassword,
+    toggleShowPassword,
+    isLoading,
+    error,
+  };
 }

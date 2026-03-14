@@ -1,96 +1,64 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { EventContext } from "../context/EventContext";
+import { ArrowLeft } from "lucide-react";
 
 const GaleriaEvento = () => {
-    const { eventId } = useParams();
-    const { eventos, adicionarFoto } = useContext(EventContext);
+  const { eventId } = useParams();
+  const { eventos, adicionarFoto } = useContext(EventContext);
+  const navigate = useNavigate();
 
-    const evento = eventos.find((e) => e.id === Number(eventId));
+  const evento = eventos.find((e) => e.id === Number(eventId));
+  if (!evento) return <p className="p-6 text-muted-foreground">Evento não encontrado</p>;
 
-    if (!evento) return <p>Evento não encontrado</p>;
+  const handleUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    adicionarFoto(evento.id, URL.createObjectURL(file));
+  };
 
-    const handleUpload = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+  const todasFotos = [...(evento.fotosApi || []), ...(evento.fotosUpload || [])];
 
-        const imageUrl = URL.createObjectURL(file);
-        adicionarFoto(evento.id, imageUrl);
-    };
+  return (
+    <div className="space-y-6 p-6">
 
-    // 🔥 GARANTE QUE NÃO QUEBRE NO PRIMEIRO RENDER
-    const todasFotos = [
-        ...(evento.fotosApi || []),
-        ...(evento.fotosUpload || []),
-    ];
-
-    return (
-        <div style={{ padding: 30 }}>
-        {/* HEADER */}
-        <div
-            style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 20,
-            }}
-        >
-            <div>
-            <h2 style={{ margin: 0 }}>{evento.nome}</h2>
-            <p style={{ margin: 0, color: "gray" }}>
-                {todasFotos.length} foto(s)
-            </p>
-            </div>
-
-            {/* BOTÃO SEMPRE VISÍVEL */}
-            <label
-            style={{
-                padding: "10px 20px",
-                background: "#000",
-                color: "#fff",
-                borderRadius: 8,
-                cursor: "pointer",
-            }}
-            >
-            + Upload de Foto
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handleUpload}
-                hidden
-            />
-            </label>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <button
+            onClick={() => navigate("/dashboard/fotos")}
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-2 transition-colors"
+          >
+            <ArrowLeft size={16} /> Voltar
+          </button>
+          <h2 className="text-2xl font-semibold text-foreground">{evento.nome}</h2>
+          <p className="text-sm text-muted-foreground">{todasFotos.length} foto(s)</p>
         </div>
 
-        {/* SE NÃO TIVER FOTO */}
-        {todasFotos.length === 0 && (
-            <p style={{ color: "gray" }}>Nenhuma foto ainda</p>
-        )}
+        <label className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium cursor-pointer hover:opacity-90 transition-opacity">
+          + Upload de Foto
+          <input type="file" accept="image/*" onChange={handleUpload} hidden />
+        </label>
+      </div>
 
-        {/* GRID */}
-        <div
-            style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: 16,
-            }}
-        >
-            {todasFotos.map((foto, index) => (
-            <img
-                key={index}
-                src={foto}
-                alt={`foto-${index}`}
-                style={{
-                width: "100%",
-                height: 200,
-                objectFit: "cover",
-                borderRadius: 8,
-                }}
-            />
-            ))}
-        </div>
-        </div>
-    );
+      {/* Vazio */}
+      {todasFotos.length === 0 && (
+        <p className="text-muted-foreground text-sm">Nenhuma foto ainda.</p>
+      )}
+
+      {/* Grid */}
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 xl:grid-cols-4">
+        {todasFotos.map((foto, index) => (
+          <img
+            key={index}
+            src={foto}
+            alt={`foto-${index}`}
+            className="w-full h-48 object-cover rounded-xl"
+          />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default GaleriaEvento;
