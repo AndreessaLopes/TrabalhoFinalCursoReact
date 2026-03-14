@@ -1,4 +1,4 @@
-import {redirect, useNavigate} from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Calendar,
@@ -10,30 +10,31 @@ import { useEffect } from "react";
 import { MdMenuOpen } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import logo from "../assets/logo.png";
+import { useAuth } from "@/context/AuthContext";
 
 const menuItems = [
-  { name: "Dashboard", icon: LayoutDashboard, redirect: '/dashboard' },
-  { name: "Eventos", icon: Calendar },
-  { name: "Fotos", icon: ImagePlus, redirect: '/dashboard/fotos' },
-  { name: "Lista de Presentes", icon: Gift },
+  { name: "Dashboard", icon: LayoutDashboard, redirect: "/dashboard" },
+  { name: "Eventos", icon: Calendar, redirect: "/dashboard/event" },
+  { name: "Fotos", icon: ImagePlus, redirect: "/dashboard/fotos" },
+  { name: "Lista de Presentes", icon: Gift, redirect: "/dashboard/presentes" },
   { name: "Configurações", icon: Settings },
 ];
 
 const Sidebar = ({ open, mobileOpen, setMobileOpen }) => {
+  const navigate = useNavigate();
+  const location = useLocation(); // ← pra destacar item ativo
+  const { user } = useAuth();
+
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setMobileOpen(false);
-      }
+      if (window.innerWidth >= 768) setMobileOpen(false);
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [setMobileOpen]);
 
   return (
     <>
-      {/* OVERLAY MOBILE */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}
@@ -43,33 +44,24 @@ const Sidebar = ({ open, mobileOpen, setMobileOpen }) => {
 
       <aside
         className={`
-          fixed inset-y-0 left-0
-          bg-gray-900 text-white
-          shadow-xl
-          flex flex-col
-          z-50
-
-          w-64
-          transform transition-transform duration-300 ease-in-out
-
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0
-          ${open ? "md:w-64" : "md:w-20"}
-        `}
+        fixed inset-y-0 left-0 bg-gray-900 text-yellow-400 shadow-xl
+        flex flex-col z-50 w-64
+        transform transition-transform duration-300 ease-in-out
+        ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0
+        ${open ? "md:w-64" : "md:w-20"}
+      `}
       >
         {/* HEADER */}
-        <div className="flex items-center justify-between px-4 h-20 border-b border-gray-800">
+        <div className="flex items-center justify-center px-4 h-20 border-b border-gray-800">
           <div className="flex items-center gap-3 overflow-hidden">
             <img src={logo} alt="logo" className="w-10 shrink-0 rounded-md" />
-
             {open && (
-              <h1 className="text-xl font-bold whitespace-nowrap">
-                Event<span className="text-green-400">Manager</span>
+              <h1 className="text-xl font-bold whitespace-nowrap text-yellow-400">
+                Festeja
               </h1>
             )}
           </div>
-
-          {/* Toggle Desktop */}
           <button
             onClick={() => setMobileOpen((prev) => !prev)}
             className="md:hidden bg-gray-900 text-white p-2 rounded-lg shadow"
@@ -77,24 +69,21 @@ const Sidebar = ({ open, mobileOpen, setMobileOpen }) => {
             <MdMenuOpen size={22} />
           </button>
         </div>
-
         {/* MENU */}
         <ul className="flex-1 px-3 py-6 space-y-2">
-          {menuItems.map((item, index) => {
+          {menuItems.map((item) => {
             const Icon = item.icon;
-            const navigate = useNavigate();
+            const isActive =
+              item.redirect && location.pathname === item.redirect;
 
             return (
               <li
-                key={index}
+                key={item.name}
                 onClick={() => item.redirect && navigate(item.redirect)}
                 className={`
-                  flex items-center gap-3
-                  px-3 py-3
-                  rounded-lg
-                  cursor-pointer
+                  flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer
                   transition-all duration-200
-                  hover:bg-gray-800
+                  ${isActive ? "bg-gray-700 text-white" : "hover:bg-gray-800"}
                   ${!open && "justify-center"}
                 `}
               >
@@ -104,21 +93,15 @@ const Sidebar = ({ open, mobileOpen, setMobileOpen }) => {
             );
           })}
         </ul>
-
         {/* FOOTER */}
         <div
-          className={`
-            flex items-center gap-3
-            px-4 py-4
-            border-t border-gray-800
-            ${!open && "justify-center"}
-          `}
+          className={`flex items-center gap-3 px-4 py-4 border-t border-gray-800 ${!open && "justify-center"}`}
         >
           <FaUserCircle size={28} />
           {open && (
             <div className="leading-4">
               <p className="text-sm font-medium">Usuário</p>
-              <span className="text-xs text-gray-400">email@email.com</span>
+              <span className="text-xs text-gray-400">{user?.email}</span>
             </div>
           )}
         </div>
