@@ -7,6 +7,8 @@ import DashboardLayout from "../layout/DashboardLayout";
 import Eventos from "@/pages/Eventos";
 import PrivateRoute from "../components/PrivateRoute";
 import GerenciaEvento from "@/pages/GerenciaEvento";
+import Presentes from "@/pages/Presentes";
+import PresentesEventos from "@/pages/PresentesEventos";
 
 export const routes = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -34,6 +36,13 @@ export const routes = createBrowserRouter([
           { path: ":eventId", element: <GerenciaEvento /> }, // ← novo
         ],
       },
+      {
+        path: "presentes",
+        children: [
+          { index: true, element: <Presentes /> },
+          { path: ":eventId", element: <PresentesEventos /> },
+        ]
+      }
     ],
   },
 ]);

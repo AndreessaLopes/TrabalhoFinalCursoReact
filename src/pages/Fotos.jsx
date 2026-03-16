@@ -9,30 +9,56 @@ const Fotos = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-8 p-8 max-w-7xl mx-auto">
+
+      {/* TÍTULO */}
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Fotos</h1>
-        <p className="text-sm text-muted-foreground mt-1">Galeria de fotos por evento</p>
+        <h1 className="text-3xl font-bold text-foreground">Galeria de Fotos</h1>
+        <p className="text-muted-foreground mt-1">
+          Explore e compartilhe fotos dos eventos
+        </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {eventos.map((evento) => (
-          <Card
-            key={evento.id}
-            className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => navigate(`/dashboard/fotos/${evento.id}`)}
-          >
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">{evento.nome}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <ImagePlus size={14} />
-                {evento.fotosApi.length + evento.fotosUpload.length} fotos
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+      {/* GRID DE EVENTOS */}
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        {eventos.map((evento) => {
+          const totalFotos =
+            (evento.fotosApi?.length || 0) +
+            (evento.fotosUpload?.length || 0);
+
+          const cover =
+            evento.fotosUpload?.[0] ||
+            evento.fotosApi?.[0] ||
+            "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg";
+
+          return (
+            <Card
+              key={evento.id}
+              onClick={() => navigate(`/dashboard/fotos/${evento.id}`)}
+              className="group cursor-pointer overflow-hidden hover:shadow-xl transition-all duration-300"
+            >
+              {/* IMAGEM DO EVENTO */}
+              <div className="h-40 w-full overflow-hidden">
+                <img
+                  src={cover}
+                  alt={evento.nome}
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">{evento.nome}</CardTitle>
+              </CardHeader>
+
+              <CardContent>
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <ImagePlus size={16} />
+                  {totalFotos} foto{totalFotos !== 1 && "s"}
+                </p>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

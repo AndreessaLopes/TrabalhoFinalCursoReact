@@ -1,42 +1,23 @@
 import { createContext, useState, useEffect } from "react";
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const EventContext = createContext();
 
 export const EventProvider = ({ children }) => {
-  const [eventos, setEventos] = useState([
-    {
-      id: 1,
-      nome: "Casamento Ana & Júlia",
-      data: "2025-06-15",
-      query: "wedding party",
-      fotosApi: [],
-      fotosUpload: [],
-      convidados: [],
-      gastos: [],
-    },
-    {
-      id: 2,
-      nome: "Aniversário 15 anos",
-      data: "2025-08-20",
-      query: "birthday party",
-      fotosApi: [],
-      fotosUpload: [],
-      convidados: [],
-      gastos: [],
-    },
-    {
-      id: 3,
-      nome: "Chá de panela",
-      data: "2025-09-10",
-      query: "kitchen party bridal shower",
-      fotosApi: [],
-      fotosUpload: [],
-      convidados: [],
-      gastos: [],
-    },
-  ]);
+  const [eventos, setEventos] = useState(() => {
+    const salvo = localStorage.getItem("eventos");
+    return salvo ? JSON.parse(salvo) : [
+      { id: 1, nome: "Casamento Ana & Júlia", data: "2025-06-15", query: "wedding party", fotosApi: [], fotosUpload: [], convidados: [], gastos: [], presentes: [] },
+      { id: 2, nome: "Aniversário 15 anos", data: "2025-08-20", query: "birthday party", fotosApi: [], fotosUpload: [], convidados: [], gastos: [], presentes: [] },
+      { id: 3, nome: "Chá de panela", data: "2025-09-10", query: "kitchen party bridal shower", fotosApi: [], fotosUpload: [], convidados: [], gastos: [], presentes: [] },
+    ];
+  });
 
+  // Salva no localStorage sempre que eventos mudar
+  useEffect(() => {
+    localStorage.setItem("eventos", JSON.stringify(eventos));
+  }, [eventos]);
+
+  // Busca fotos sem sobrescrever dados existentes
   useEffect(() => {
     const buscarFotos = async () => {
       const apiKey = import.meta.env.VITE_PEXELS_API_KEY;
@@ -47,20 +28,25 @@ export const EventProvider = ({ children }) => {
           try {
             const response = await fetch(
               `https://api.pexels.com/v1/search?query=${evento.query}&per_page=20`,
-              { headers: { Authorization: apiKey } },
+              { headers: { Authorization: apiKey } }
             );
             const data = await response.json();
-            return {
-              ...evento,
-              fotosApi: data.photos.map((f) => f.src.medium),
-            };
+            return { ...evento, fotosApi: data.photos.map((f) => f.src.medium) };
           } catch {
             return evento;
           }
-        }),
+        })
       );
 
-      setEventos(eventosAtualizados);
+      // ✅ Só atualiza fotosApi, preserva presentes/convidados/gastos
+      setEventos((prevEventos) =>
+        prevEventos.map((eventoAtual) => {
+          const atualizado = eventosAtualizados.find((e) => e.id === eventoAtual.id);
+          return atualizado
+            ? { ...eventoAtual, fotosApi: atualizado.fotosApi }
+            : eventoAtual;
+        })
+      );
     };
 
     buscarFotos();
@@ -70,12 +56,9 @@ export const EventProvider = ({ children }) => {
     setEventos((prev) =>
       prev.map((evento) =>
         evento.id === eventId
-          ? {
-              ...evento,
-              fotosUpload: [...evento.fotosUpload, novaFoto],
-            }
-          : evento,
-      ),
+          ? { ...evento, fotosUpload: [...evento.fotosUpload, novaFoto] }
+          : evento
+      )
     );
   };
 
@@ -83,15 +66,9 @@ export const EventProvider = ({ children }) => {
     setEventos((prev) =>
       prev.map((e) =>
         e.id === eventId
-          ? {
-              ...e,
-              convidados: [
-                ...e.convidados,
-                { id: Date.now(), nome, confirmado: false },
-              ],
-            }
-          : e,
-      ),
+          ? { ...e, convidados: [...e.convidados, { id: Date.now(), nome, confirmado: false }] }
+          : e
+      )
     );
   };
 
@@ -102,11 +79,11 @@ export const EventProvider = ({ children }) => {
           ? {
               ...e,
               convidados: e.convidados.map((c) =>
-                c.id === convidadoId ? { ...c, confirmado: !c.confirmado } : c,
+                c.id === convidadoId ? { ...c, confirmado: !c.confirmado } : c
               ),
             }
-          : e,
-      ),
+          : e
+      )
     );
   };
 
@@ -114,15 +91,9 @@ export const EventProvider = ({ children }) => {
     setEventos((prev) =>
       prev.map((e) =>
         e.id === eventId
-          ? {
-              ...e,
-              gastos: [
-                ...e.gastos,
-                { id: Date.now(), titulo, valor: Number(valor), categoria },
-              ],
-            }
-          : e,
-      ),
+          ? { ...e, gastos: [...e.gastos, { id: Date.now(), titulo, valor: Number(valor), categoria }] }
+          : e
+      )
     );
   };
 
@@ -136,8 +107,44 @@ export const EventProvider = ({ children }) => {
       fotosUpload: [],
       convidados: [],
       gastos: [],
+      presentes: [],
     };
     setEventos((prev) => [...prev, novoEvento]);
+  };
+
+  const removerEvento = (eventId) => {
+    setEventos((prev) => prev.filter((evento) => evento.id !== eventId));
+  };
+
+  const removerFoto = (eventId, fotoIndex) => {
+    setEventos((prev) =>
+      prev.map((evento) => {
+        if (evento.id !== eventId) return evento;
+        const todasFotos = [...(evento.fotosApi || []), ...(evento.fotosUpload || [])];
+        todasFotos.splice(fotoIndex, 1);
+        return { ...evento, fotosApi: [], fotosUpload: todasFotos };
+      })
+    );
+  };
+
+  const adicionarPresente = (eventId, nomePresente) => {
+    setEventos((prev) =>
+      prev.map((evento) =>
+        evento.id === eventId
+          ? { ...evento, presentes: [...(evento.presentes || []), { id: Date.now(), nome: nomePresente }] }
+          : evento
+      )
+    );
+  };
+
+  const removerPresente = (eventId, presenteId) => {
+    setEventos((prev) =>
+      prev.map((evento) =>
+        evento.id === eventId
+          ? { ...evento, presentes: evento.presentes.filter((p) => p.id !== presenteId) }
+          : evento
+      )
+    );
   };
 
   return (
@@ -145,10 +152,14 @@ export const EventProvider = ({ children }) => {
       value={{
         eventos,
         adicionarFoto,
-        criarEvento, 
-        adicionarConvidado, 
-        toggleConfirmado, 
-        adicionarGasto, 
+        criarEvento,
+        removerEvento,
+        adicionarConvidado,
+        toggleConfirmado,
+        adicionarGasto,
+        removerFoto,
+        adicionarPresente,
+        removerPresente,
       }}
     >
       {children}
