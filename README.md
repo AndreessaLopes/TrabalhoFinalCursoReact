@@ -1,5 +1,3 @@
-### Etapa 1 - Criação do repositório no github e criar um readme.md com nome dos integrantes
-
 ## 👥 Integrantes
 
 - **Andressa Caroline Lopes de Assis**  
@@ -10,7 +8,15 @@
 
 - **Nicole Caroline Santos**  
   🔗 GitHub: https://github.com/santos-nicole
+  
+- **Poliana Ap. Carmo Faria**  
+  🔗 GitHub: https://github.com/Polyanaifmg
 
-### Etapa 2 - Criação de uma nova branch com nome escolhido pelos integrantes e fazer um PR para participação de todos
+## 🎨 Tema escolhido para o projeto
+Plataforma colaborativa para gestão de eventos com Dashboard de gastos, listas de presentes e mural de fotos.
 
-- **Branch de modificações: Together**
+## 🔗 Link do repositório do GitHub
+https://github.com/AndreessaLopes/TrabalhoFinalCursoReact.git
+
+## Link público do quadro no Trello
+https://trello.com/b/kjIKn2Wy/plataforma-colaborativa-de-gestao-de-eventos
