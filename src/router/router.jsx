@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
+import Register from "../pages/Regiser";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
 import Fotos from "../pages/Fotos";
@@ -9,7 +10,8 @@ import PrivateRoute from "../components/PrivateRoute";
 import GerenciaEvento from "@/pages/GerenciaEvento";
 
 export const routes = createBrowserRouter([
-  { path: "/", element: <Login /> },
+  { path: "/", element: <Register /> },
+  { path: "/login", element: <Login /> },
   {
     path: "/dashboard",
     element: (

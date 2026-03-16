@@ -1,5 +1,5 @@
-import "./login.css";
-import { useLoginForm } from "../hooks/useLoginForm";
+import "./register.css";
+import { useRegisterForm } from "../hooks/useRegisterForm";
 
 const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
   id: i,
@@ -12,22 +12,22 @@ const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
   delay: `${Math.random() * 3}s`,
 }));
 
-export default function Login() {
+export default function Register() {
   const { register, handleSubmit, errors, showPassword, isLoading, error } =
-    useLoginForm();
+    useRegisterForm();
 
   return (
-    <div className="login-page">
+    <div className="register-page">
       {/* Blobs decorativos */}
-      <div className="login-blob login-blob--gold" aria-hidden="true" />
-      <div className="login-blob login-blob--rose" aria-hidden="true" />
-      <div className="login-blob login-blob--center" aria-hidden="true" />
+      <div className="register-blob register-blob--gold" aria-hidden="true" />
+      <div className="register-blob register-blob--rose" aria-hidden="true" />
+      <div className="register-blob register-blob--center" aria-hidden="true" />
 
       {/* Partículas */}
       {PARTICLES.map((p) => (
         <div
           key={p.id}
-          className="login-particle"
+          className="register-particle"
           aria-hidden="true"
           style={{
             width: p.size,
@@ -43,37 +43,37 @@ export default function Login() {
       ))}
 
       {/* Card principal */}
-      <main className="login-card">
+      <main className="register-card">
         {/* Logo */}
-        <div className="login-logo">
-          <div className="login-logo__wrapper">
-            <span className="login-logo__icon" aria-hidden="true">
+        <div className="register-logo">
+          <div className="register-logo__wrapper">
+            <span className="register-logo__icon" aria-hidden="true">
               🎉
             </span>
-            <h1 className="login-logo__name">festeja</h1>
+            <h1 className="register-logo__name">festeja</h1>
           </div>
-          <p className="login-logo__tagline">seu evento, sua memória</p>
+          <p className="register-logo__tagline">seu evento, sua memória</p>
         </div>
 
         {/* Título */}
-        <div className="login-title">
-          <h2 className="login-title__heading">Bem-vindo de volta!</h2>
-          <p className="login-title__sub">
-            Entre na sua conta para acessar seu evento.
+        <div className="register-title">
+          <h2 className="register-title__heading">Crie sua conta</h2>
+          <p className="register-title__sub">
+            Cadastre-se para acessar seu evento.
           </p>
         </div>
 
         {/* Formulário */}
-        <form className="login-form" onSubmit={handleSubmit} noValidate>
+        <form className="register-form" onSubmit={handleSubmit} noValidate>
           {/* E-mail */}
-          <div className="login-field">
-            <label className="login-field__label" htmlFor="email">
+          <div className="register-field">
+            <label className="register-field__label" htmlFor="email">
               E-mail
             </label>
             <input
               id="email"
               type="email"
-              className="login-field__input"
+              className="register-field__input"
               placeholder="seuemail@exemplo.com"
               autoComplete="email"
               {...register("email", {
@@ -85,22 +85,22 @@ export default function Login() {
               })}
             />
             {errors.email && (
-              <p className="login-error" role="alert">
+              <p className="register-error" role="alert">
                 {errors.email.message}
               </p>
             )}
           </div>
 
           {/* Senha */}
-          <div className="login-field login-field--password">
-            <label className="login-field__label" htmlFor="password">
+          <div className="register-field register-field--password">
+            <label className="register-field__label" htmlFor="password">
               Senha
             </label>
-            <div className="login-field__input-wrapper">
+            <div className="register-field__input-wrapper">
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                className="login-field__input login-field__input--password"
+                className="register-field__input register-field__input--password"
                 placeholder="••••••••"
                 autoComplete="current-password"
                 {...register("password", {
@@ -112,57 +112,58 @@ export default function Login() {
                 })}
               />
               {errors.password && (
-                <p className="login-error" role="alert">
+                <p className="register-error" role="alert">
                   {errors.password.message}
                 </p>
               )}
             </div>
           </div>
+          
 
           {/* Esqueceu a senha */}
-          <div className="login-forgot">
-            <button type="button" className="login-forgot__btn">
+          <div className="register-forgot">
+            <button type="button" className="register-forgot__btn">
               Esqueceu a senha?
             </button>
           </div>
 
           {/* Erro */}
           {error && (
-            <p className="login-error" role="alert">
+            <p className="register-error" role="alert">
               {error}
             </p>
           )}
 
           {/* Submit */}
-          <div className="login-submit">
+          <div className="register-submit">
             <button
               type="submit"
               disabled={isLoading}
-              className={`login-submit__btn ${isLoading ? "login-submit__btn--loading" : ""}`}
+              className={`register-submit__btn ${isLoading ? "register-submit__btn--loading" : ""}`}
             >
               {isLoading ? "Entrando..." : "Entrar no Festeja"}
             </button>
           </div>
 
           {/* Divisor */}
-          <div className="login-divider" aria-hidden="true">
-            <div className="login-divider__line" />
-            <div className="login-divider__line" />
+          <div className="register-divider" aria-hidden="true">
+            <div className="register-divider__line" />
+            <div className="register-divider__line" />
           </div>
         </form>
 
-        {/* Cadastro */}
         <p className="login-signup">
-          Não tem uma conta?{" "}
-          <button onClick={() => window.location.href = "/"} type="button" className="login-signup__btn">
-            Crie sua conta agora
+          Já possui uma conta?{" "}
+          <button onClick={() => window.location.href = "/login"}
+          type="button" className="login-signup__btn">
+            Faça login agora
           </button>
         </p>
 
         {/* Pills de funcionalidades */}
-        <div className="login-features" aria-label="Funcionalidades do Festeja">
+        <div className="register-features" aria-label="Funcionalidades do Festeja">
           {["🎁 Presentes", "📸 Fotos", "💰 Gastos"].map((tag) => (
-            <span key={tag} className="login-features__pill">
+            <span key={tag} className="register-features__pill">
               {tag}
             </span>
           ))}
