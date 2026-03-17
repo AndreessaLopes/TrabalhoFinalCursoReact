@@ -4,7 +4,7 @@ import {
   Calendar,
   ImagePlus,
   Gift,
-  Settings,
+  LogOut,
 } from "lucide-react";
 import { useEffect } from "react";
 import { MdMenuOpen } from "react-icons/md";
@@ -17,7 +17,8 @@ const menuItems = [
   { name: "Eventos", icon: Calendar, redirect: "/dashboard/event" },
   { name: "Fotos", icon: ImagePlus, redirect: "/dashboard/fotos" },
   { name: "Lista de Presentes", icon: Gift, redirect: "/dashboard/presentes" },
-];
+  { name: "Sair", icon: LogOut, redirect: "/logout" },
+]; 
 
 const Sidebar = ({ open, mobileOpen, setMobileOpen }) => {
   const navigate = useNavigate();

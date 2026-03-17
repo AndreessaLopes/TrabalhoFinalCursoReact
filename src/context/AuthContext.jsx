@@ -4,13 +4,20 @@ import { createContext, useState, useContext } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); 
+  // ← inicializa já lendo do localStorage
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("user");
+    return saved ? JSON.parse(saved) : null;
+  });
 
   const login = (email) => {
-    setUser({ email }); 
+    const userData = { email };
+    localStorage.setItem("user", JSON.stringify(userData)); // ← salva
+    setUser(userData);
   };
 
   const logout = () => {
+    localStorage.removeItem("user"); // ← limpa
     setUser(null);
   };
 
@@ -21,5 +28,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// hook de atalho
 export const useAuth = () => useContext(AuthContext);

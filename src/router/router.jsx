@@ -10,10 +10,12 @@ import PrivateRoute from "../components/PrivateRoute";
 import GerenciaEvento from "@/pages/GerenciaEvento";
 import Presentes from "@/pages/Presentes";
 import PresentesEventos from "@/pages/PresentesEventos";
+import LogOut from "@/pages/LogOut";
 
 export const routes = createBrowserRouter([
   { path: "/", element: <Register /> },
   { path: "/login", element: <Login /> },
+  { path: "/logout", element: <LogOut /> },
   {
     path: "/dashboard",
     element: (
@@ -44,7 +46,7 @@ export const routes = createBrowserRouter([
           { index: true, element: <Presentes /> },
           { path: ":eventId", element: <PresentesEventos /> },
         ]
-      }
+      }, 
     ],
   },
 ]);
