@@ -154,7 +154,7 @@ export default function Register() {
           </div>
         </form>
 
-        <p className="login-signup">
+        <p className="register-signup">
           Já possui uma conta?{" "}
           <button onClick={() => navigate("/login")}
           type="button" className="login-signup__btn">
