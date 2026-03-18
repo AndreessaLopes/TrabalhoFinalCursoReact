@@ -1,5 +1,6 @@
 import "./register.css";
 import { useRegisterForm } from "../hooks/useRegisterForm";
+import { useNavigate } from "react-router-dom";
 
 const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
   id: i,
@@ -13,6 +14,7 @@ const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 export default function Register() {
+  const navigate = useNavigate();
   const { register, handleSubmit, errors, showPassword, isLoading, error } =
     useRegisterForm();
 
@@ -154,7 +156,7 @@ export default function Register() {
 
         <p className="login-signup">
           Já possui uma conta?{" "}
-          <button onClick={() => window.location.href = "/login"}
+          <button onClick={() => navigate("/login")}
           type="button" className="login-signup__btn">
             Faça login agora
           </button>
