@@ -1,5 +1,6 @@
 import "./login.css";
 import { useLoginForm } from "../hooks/useLoginForm";
+import { useNavigate } from "react-router-dom";
 
 const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
   id: i,
@@ -13,6 +14,7 @@ const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 export default function Login() {
+  const navigate = useNavigate();
   const { register, handleSubmit, errors, showPassword, isLoading, error } =
     useLoginForm();
 
@@ -154,7 +156,7 @@ export default function Login() {
         {/* Cadastro */}
         <p className="login-signup">
           Não tem uma conta?{" "}
-          <button onClick={() => window.location.href = "/"} type="button" className="login-signup__btn">
+          <button onClick={() => navigate("/")} type="button" className="login-signup__btn">
             Crie sua conta agora
           </button>
         </p>
