@@ -152,10 +152,10 @@ export default function Register() {
           </div>
         </form>
 
-        <p className="login-signup">
+        <p className="register-signup">
           Já possui uma conta?{" "}
           <button onClick={() => window.location.href = "/login"}
-          type="button" className="login-signup__btn">
+          type="button" className="register-signup__btn">
             Faça login agora
           </button>
         </p>
